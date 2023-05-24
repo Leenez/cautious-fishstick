@@ -14,10 +14,21 @@ const mongo_password = process.env.MONGODB_PASSWORD;
 const database = "contactdatabase";
 const url = `mongodb+srv://${mongo_user}:${mongo_password}@${mongo_url}/${database}?retryWrites=true&w=majority`
 
-mongoose.connect(url).then(
-    () => console.log("Connected to MongoDB"),
-    (error) => console.log("Failed",error)
-)
+//mongoose.connect(url).then(
+//    () => console.log("Connected to MongoDB"),
+//    (error) => console.log("Failed",error)
+//)
+
+const dbConnect = async (url) => {
+    const connection = await mongoose.connect(url);
+    if (connection) { 
+        console.log("Connected to MongoDB")
+    } else {
+        console.log("Not connected")
+    }
+}
+
+dbConnect(url);
 
 app.get("/api/contact",function(req,res) {
     contactModel.find().then(function(contacts) {
