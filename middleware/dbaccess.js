@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const config = require("../../config")
+const config = require("../config")
 
 const url = `mongodb+srv://${config.mongo_user}:${config.mongo_password}@${config.mongo_url}/${config.database}?retryWrites=true&w=majority`
 
