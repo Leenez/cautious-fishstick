@@ -1,7 +1,6 @@
 const express = require("express");
 const chatRoute = require("./routes/chatroute");
 const accountsRoute = require("./routes/accountsroute");
-const config = require("../config");
 const middleWare = require("./middleware/userloggedin");
 const dbAccess = require("./middleware/dbaccess");
 
