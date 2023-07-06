@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const userModel = require("../models/user");
 const userLastSeenModel = require("../models/userlastseen");
 const sessionModel = require("../models/session");
-const serverConfig = require("../../config");
+const serverConfig = require("../config");
 const middleWare = require("../middleware/userloggedin")
 
 let router = express.Router()
