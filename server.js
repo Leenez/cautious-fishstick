@@ -12,7 +12,7 @@ const startServer = async () => {
     app.use(express.json());
     app.use("/",express.static("public"))
     
-    let port = config.server_port 
+    let port = process.env.PORT || 3001 
     
     app.use("",accountsRoute);
     app.use("/api",middleWare.isUserLogged,chatRoute);
