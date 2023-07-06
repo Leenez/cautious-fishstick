@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const sessionModel = require("../models/session");
-const config = require("../../config")
+const config = require("../config")
 
 const createToken = () => {
     let token = crypto.randomBytes(64);
