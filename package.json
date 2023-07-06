@@ -1,21 +1,16 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "backend for shopping app",
+  "description": "RESTful chat backend",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "express",
-    "mongoose",
-    "mern"
-  ],
-  "author": "Erno",
+  "author": "",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "express": "^4.18.2",
-    "mongoose": "^7.2.1"
+    "mongoose": "^7.2.2"
   }
 }

@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 let Schema = mongoose.Schema({
+    date:Date,
     user:{type:String,index:true},
-    ttl:Number,
-    token:String
+    message:String,
 })
 
-module.exports = mongoose.model("Session",Schema);
+module.exports = mongoose.model("Message",Schema);
