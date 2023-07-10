@@ -18,7 +18,6 @@ const askReply = async (chatPost) => {
         const reply = completion.data.choices[0].message.content
         return reply
     } catch(err) {
-        console.log(err)
         return {"Message":"ChatGPT error"}
     }
 }
