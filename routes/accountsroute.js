@@ -8,41 +8,38 @@ const middleWare = require("../middleware/userloggedin")
 
 let router = express.Router()
 
-router.post("/register", function(req,res) {
-    if(!req.body) {
-        return res.status(400).json({"Message":"Bad Request"});
-    }
-    if(!req.body.username || !req.body.password) {
-        return res.status(400).json({"Message":"Bad Request"});
-    }
-    if(req.body.username.length < 4 || req.body.password.length < 8) {
-        return res.status(400).json({"Message":"Bad Request"});
-    }
-    bcrypt.hash(req.body.password,14, (err,hash) => {
-        if(err) {
-            return res.status(500).json({"Message":"Internal server error"});
-        }
-        let user = new userModel({
-            "username":req.body.username,
-            "password":hash
-        })
-        user.save().then((user) => {
-            let lastSeen = new userLastSeenModel({
-               "user":req.body.username,
-            })
-            lastSeen.save()
-            return res.status(200).json({"Message":"Register success"});
-        }).catch(function(err) {
-            if(err.code === 11000) {
-                return res.status(409).json({"Message":"Username is already in use"})
-            }
-            console.log(err);
-            return res.status(500).json({"Message":"internal Server error"})
-        })
-    })
+router.post("/register",function(req,res) {
+	if(!req.body) {
+		return res.status(400).json({"Message":"Bad Request"});
+	}
+	if(!req.body.username || !req.body.password) {
+		return res.status(400).json({"Message":"Bad Request"});
+	}
+	if(req.body.username.length < 4 || req.body.password.length < 8) {
+		return res.status(400).json({"Message":"Bad Request"});
+	}
+	bcrypt.hash(req.body.password,14,function(err,hash) {
+		if(err) {
+			console.log(err);
+			return res.status(500).json({"Message":"Internal server error"});
+		}
+		let user = new userModel({
+			"username":req.body.username,
+			"password":hash
+		})
+		user.save().then(function(user) {
+			return res.status(200).json({"Message":"Register success"});
+		}).catch(function(err) {
+			if(err.code === 11000) {
+				return res.status(409).json({"Message":"Username is already in use"});
+			}
+			console.log(err);
+			return res.status(500).json({"Message":"Internal server error"});
+		});
+	})
 })
 
-router.post("/login", (req,res) => {
+router.post("/login", async (req,res) => {
     if(!req.body) {
         return res.status(400).json({"Message":"Bad Request"});
     }
@@ -51,6 +48,21 @@ router.post("/login", (req,res) => {
     }
     if(req.body.username.length < 4 || req.body.password.length < 8) {
         return res.status(400).json({"Message":"Bad Request"});
+    }
+    try {
+        const usrmdl = await userModel.findOne({"username":req.body.username})
+        if(usrmdl) {
+            const userLastSeen = await userLastSeenModel.findOne({ "user" : req.body.username });
+            if (userLastSeen) {
+                await userLastSeenModel.findOneAndRemove({ "user" : req.body.username });
+            }
+            const lastSeenNew = new userLastSeenModel({
+                "user":req.body.username,
+            })
+            await lastSeenNew.save()    
+        }
+    } catch(err) {
+            return res.status(500).json({"Message":"Internal Sever Error"})
     }
     userModel.findOne({"username":req.body.username}).then(function(user) {
         if(!user) {

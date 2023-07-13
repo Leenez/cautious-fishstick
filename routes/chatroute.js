@@ -9,12 +9,7 @@ router.post("/msgs",async (req,res) => {
     try {
         let lastSeen = await userLastSeenModel.findOne({ "user" : req.body.user });
         lastSeen = lastSeen.lastseen;
-        await userLastSeenModel.findOneAndRemove({ "user" : req.body.user });
-        const lastSeenNew = new userLastSeenModel({
-            "user":req.body.user,
-         })
-        await lastSeenNew.save()
-        const messages = await messageModel.find({ "date" : { $gte : lastSeen } });
+        const messages = await messageModel.find({ "date" : { $gte : lastSeen } }).sort({date: "ascending"});
         return res.status(200).json(messages);
     } catch(err) {
         console.log(err)
@@ -27,7 +22,8 @@ router.post("/msg", async (req,res) => {
         let tmpMessage = ""
         if(req.body.chatGpt && req.body.chatGpt === true) {
             tmpMessage = await chatGpt.askReply(req.body.message)
-            if (tmpMessage.Message && tmpMessage.Message === "ChatGPT error") {
+            if (tmpMessage.Message && (tmpMessage.Message === "ChatGPT error" || 
+                    tmpMessage.Message === "ChatGPT didn't reply anything")) {
                 return res.status(200).json(tmpMessage);
             } 
         } else {
